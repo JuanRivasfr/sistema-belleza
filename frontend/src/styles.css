@@ -1,0 +1,140 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #333;
+}
+
+/* BUTTON */
+.btn {
+  background: #e91e63;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background: #c2185b;
+}
+
+/* INPUT */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.input-group label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #c2185b;
+}
+
+.input-group input {
+  padding: 10px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+}
+
+/* NAVBAR */
+.navbar {
+  background: #fff;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.navbar-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background: #333;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: #555;
+}
+
+/* LAYOUT */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.layout-content {
+  flex: 1;
+  background: #f7f7f7;
+  padding: 20px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  padding: 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* TABLE */
+.table {
+  width: 100%;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: #ddd;
+  padding: 10px;
+}
+
+.table td {
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+/* LOGIN */
+.login-container {
+  min-height: 100vh;
+  background: #ffe1ec;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  background: white;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  width: 350px;
+}
