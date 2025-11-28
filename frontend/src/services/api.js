@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:4000/api", // Ajusta si el backend está en otra URL
+  baseURL: "https://sistema-belleza.onrender.com/api", // Ajusta si el backend está en otra URL
   headers: {
     "Content-Type": "application/json",
   },
