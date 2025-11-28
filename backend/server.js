@@ -8,6 +8,7 @@ import serviciosRoutes from './src/routes/servicios.routes.js';
 import citasRoutes from './src/routes/citas.routes.js';
 import pagosRoutes from './src/routes/pagos.routes.js';
 import reportesRoutes from './src/routes/reportes.routes.js';
+import empleadosRoutes from './src/routes/empleados.routes.js';
 import 'dotenv/config'; 
 
 
@@ -21,8 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/servicios', serviciosRoutes);
 app.use('/api/citas', citasRoutes);
-app.use('/api/pagos', pagosRoutes);
-app.use('/api/reportes', reportesRoutes);
+app.use('/api/empleados', empleadosRoutes);
 
 app.get('/', (req, res) => {
   res.send('API funcionando 🚀');

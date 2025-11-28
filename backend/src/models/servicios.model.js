@@ -27,6 +27,18 @@ export async function listServicios() {
   return rows;
 }
 
+// nueva función de búsqueda
+export async function searchServicios(q) {
+  const term = `%${q}%`;
+  const { rows } = await db.query(
+    `SELECT * FROM servicios
+     WHERE nombre ILIKE $1 OR descripcion ILIKE $1
+     ORDER BY nombre`,
+    [term]
+  );
+  return rows;
+}
+
 export async function getServicioById(id) {
   const { rows } = await db.query('SELECT * FROM servicios WHERE id = $1', [id]);
   return rows[0];

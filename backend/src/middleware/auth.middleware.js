@@ -10,9 +10,11 @@ export const authenticate = async (req, res, next) => {
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
 
+    const userId = payload.id; // ← CORREGIDO
+
     const { rows } = await db.query(
       'SELECT id, nombre_completo, correo, rol FROM usuarios WHERE id = $1',
-      [payload.userId]
+      [userId]
     );
 
     if (rows.length === 0) {
@@ -21,6 +23,7 @@ export const authenticate = async (req, res, next) => {
 
     req.user = rows[0];
     next();
+
   } catch (err) {
     return res.status(401).json({ message: 'Token inválido' });
   }

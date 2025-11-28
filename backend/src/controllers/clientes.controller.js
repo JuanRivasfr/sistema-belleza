@@ -25,3 +25,11 @@ export async function searchClientes(req, res) {
   const results = await clientesModel.searchClientes(q);
   res.json(results);
 }
+
+// nuevo controlador para eliminar cliente
+export async function deleteCliente(req, res) {
+  const id = req.params.id;
+  const deleted = await clientesModel.deleteCliente(id);
+  if (!deleted) return res.status(404).json({ message: 'Cliente no encontrado' });
+  res.json({ message: 'Cliente eliminado', cliente: deleted });
+}

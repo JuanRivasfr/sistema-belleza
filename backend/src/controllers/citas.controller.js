@@ -1,6 +1,5 @@
-import * as citasModel from '../models/citas.model.js';
-import * as serviciosModel from '../models/servicios.model.js';
 import db from '../config/db.js';
+import * as citasModel from '../models/citas.model.js';
 
 /**
  * Crear cita (solo ADMIN)
@@ -13,7 +12,7 @@ export async function crearCita(req, res) {
       return res.status(400).json({ message: 'Datos incompletos' });
     }
 
-    // calcular duración
+    // validar existencia y duración de servicios
     const placeholders = servicios.map((_, i) => `$${i + 1}`).join(',');
     const servicioRows = await db.query(
       `SELECT id, duracion_minutos FROM servicios WHERE id IN (${placeholders})`,
@@ -38,22 +37,17 @@ export async function crearCita(req, res) {
     const overlap = await citasModel.hasOverlap(especialista_id, fecha, hora_inicio_sql, hora_fin);
     if (overlap) return res.status(409).json({ message: 'El especialista tiene otra cita en ese horario' });
 
-    // crear cita
-    const cita = await citasModel.createCita({
+    // crear cita + servicios en una sola transacción
+    const cita = await citasModel.createCitaWithServicios({
       cliente_id,
       especialista_id,
       fecha,
       hora_inicio: hora_inicio_sql,
-      hora_fin
+      hora_fin,
+      servicios,
     });
 
-    // agregar servicios
-    for (const s of servicios) {
-      await citasModel.addServicioToCita(cita.id, s);
-    }
-
     res.status(201).json(cita);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error creando la cita' });
@@ -63,7 +57,7 @@ export async function crearCita(req, res) {
 export async function modificarCita(req, res) {
   try {
     const id = req.params.id;
-    const { fecha, hora_inicio, servicios } = req.body;
+    const { fecha, hora_inicio, servicios, especialista_id, cliente_id } = req.body;
 
     const cita = await citasModel.getCitaById(id);
     if (!cita) return res.status(404).json({ message: 'Cita no encontrada' });
@@ -96,8 +90,11 @@ export async function modificarCita(req, res) {
       const hora_fin = `${String(finDate.getHours()).padStart(2, '0')}:${String(finDate.getMinutes()).padStart(2, '0')}:00`;
       const hora_inicio_sql = `${String(inicioDate.getHours()).padStart(2, '0')}:${String(inicioDate.getMinutes()).padStart(2, '0')}:00`;
 
+      // usar el especialista destino si se pasa, si no el actual de la cita
+      const targetEspecialista = especialista_id || cita.especialista_id;
+
       const overlap = await citasModel.hasOverlap(
-        cita.especialista_id,
+        targetEspecialista,
         fecha,
         hora_inicio_sql,
         hora_fin,
@@ -106,7 +103,15 @@ export async function modificarCita(req, res) {
 
       if (overlap) return res.status(409).json({ message: 'El especialista tiene otra cita en ese horario' });
 
-      await citasModel.updateCitaTimes(id, fecha, hora_inicio_sql, hora_fin);
+      // actualizar cita incluyendo cliente/especialista (si vienen) y tiempos
+      await citasModel.updateCitaFields(
+        id,
+        cliente_id || cita.cliente_id,
+        targetEspecialista,
+        fecha,
+        hora_inicio_sql,
+        hora_fin
+      );
 
       if (Array.isArray(servicios)) {
         await db.query('DELETE FROM cita_servicios WHERE cita_id = $1', [id]);
@@ -141,3 +146,84 @@ export async function listarCitasPorFecha(req, res) {
   const rows = await citasModel.listCitasByFecha(fecha);
   res.json(rows);
 }
+
+export async function getDisponibilidadEspecialista(req, res) {
+  try {
+    const especialistaId = req.params.id;
+    const fecha = req.query.fecha; // YYYY-MM-DD
+    const duracion = Number(req.query.duracion) || 0; // minutos
+    if (!fecha || !especialistaId || !duracion) return res.status(400).json({ message: 'especialista, fecha y duracion son requeridos' });
+
+    const day = new Date(`${fecha}T00:00:00`).getDay(); // 0-6
+
+    // obtener turnos del especialista para ese día
+    const { rows: turnos } = await db.query(
+      `SELECT hora_inicio, hora_fin FROM turnos WHERE especialista_id = $1 AND dia_semana = $2 ORDER BY hora_inicio`,
+      [especialistaId, day]
+    );
+
+    // obtener citas existentes del especialista en la fecha
+    const { rows: citas } = await db.query(
+      `SELECT hora_inicio, hora_fin FROM citas WHERE especialista_id = $1 AND fecha = $2 ORDER BY hora_inicio`,
+      [especialistaId, fecha]
+    );
+
+    const toMinutes = (t) => {
+      const [hh, mm] = t.split(':').map(Number);
+      return hh * 60 + mm;
+    };
+    const toHHMMSS = (m) => {
+      const hh = String(Math.floor(m / 60)).padStart(2, "0");
+      const mm = String(m % 60).padStart(2, "0");
+      return `${hh}:${mm}:00`;
+    };
+
+    const slots = [];
+    for (const t of turnos) {
+      let cursor = toMinutes(t.hora_inicio);
+      const end = toMinutes(t.hora_fin);
+
+      // citas busy dentro del turno
+      const busy = citas
+        .map(c => ({ start: toMinutes(c.hora_inicio), end: toMinutes(c.hora_fin) }))
+        .filter(b => b.end > cursor && b.start < end)
+        .sort((a, b) => a.start - b.start);
+
+      for (const b of busy) {
+        // espacio libre entre cursor y b.start
+        if (b.start - cursor >= duracion) {
+          for (let s = cursor; s + duracion <= b.start; s += 15) {
+            slots.push(toHHMMSS(s));
+          }
+        }
+        cursor = Math.max(cursor, b.end);
+      }
+
+      // espacio final del turno
+      if (end - cursor >= duracion) {
+        for (let s = cursor; s + duracion <= end; s += 15) {
+          slots.push(toHHMMSS(s));
+        }
+      }
+    }
+
+    return res.json(slots);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error calculando disponibilidad' });
+  }
+}
+
+// ====================== nuevo ======================
+export async function deleteCita(req, res) {
+  try {
+    const id = req.params.id;
+    const deleted = await citasModel.deleteCita(id);
+    if (!deleted) return res.status(404).json({ message: 'Cita no encontrada' });
+    res.json({ message: 'Cita eliminada', cita: deleted });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error al eliminar la cita' });
+  }
+}
+

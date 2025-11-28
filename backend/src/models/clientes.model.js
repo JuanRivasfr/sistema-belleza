@@ -40,3 +40,12 @@ export async function searchClientes(q) {
   );
   return rows;
 }
+
+// nueva función para eliminar cliente
+export async function deleteCliente(id) {
+  const { rows } = await db.query(
+    `DELETE FROM clientes WHERE id = $1 RETURNING *`,
+    [id]
+  );
+  return rows[0];
+}

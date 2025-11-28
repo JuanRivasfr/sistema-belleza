@@ -138,3 +138,286 @@ body {
   box-shadow: 0 2px 12px rgba(0,0,0,0.2);
   width: 350px;
 }
+
+.form-page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffe1ec; /* mismo fondo rosado suave */
+  padding: 20px;
+}
+
+/* FORM BOX */
+.form-box {
+  /* ya existía: añadimos límites y scroll interno */
+  position: relative; /* importante para overlays/absolute hijos */
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  /* Evita que el formulario crezca fuera de la pantalla y permita scroll interno */
+  max-height: calc(100vh - 150px); /* ajusta 150px según altura de tu navbar/padding */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* --- FORM PAGE --- */
+.form-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #ffe1ec;
+  display: flex;
+  justify-content: center;
+  padding: 25px;
+}
+
+/* Contenedor principal ajustado */
+.clientes-box {
+  max-width: 750px !important;
+  width: 100%;
+}
+
+/* Título */
+.titulo-clientes {
+  text-align: center;
+  font-size: 26px;
+  margin-bottom: 20px;
+  color: #c2185b;
+  font-weight: bold;
+}
+
+/* --- BUSCADOR --- */
+.input-pink {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #f5b6ca;
+  background: #fff5fa;
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+.input-pink:focus {
+  border-color: #c2185b;
+  outline: none;
+}
+
+/* --- GRID DE TARJETAS --- */
+.clientes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Responsivo: en pantallas pequeñas pasar a 1 columna */
+@media (max-width: 700px) {
+  .clientes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- TARJETA DEL CLIENTE --- */
+.card-cliente {
+  background: white;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.cliente-nombre {
+  font-size: 18px;
+  font-weight: bold;
+  color: #c2185b;
+}
+
+.cliente-dato {
+  font-size: 14px;
+  color: #777;
+}
+
+/* --- BOTONES --- */
+.botones-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.btn-pastel {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: .2s;
+  color: #333;
+}
+
+/* Colores pastel combinados */
+.pastel-ver {
+  background: #c5ffd0;
+}
+
+.pastel-editar {
+  background: #ffe9b0;
+}
+
+.pastel-eliminar {
+  background: #ffb0b0;
+}
+
+.btn-crear {
+  background: #ffc4dd;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* Hover pastel suave */
+.btn-pastel:hover {
+  transform: scale(1.04);
+  filter: brightness(1.05);
+}
+
+/* CITAS */
+.citas-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .citas-grid { grid-template-columns: 1fr; }
+}
+
+.card-cita {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 700px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* servicios as grid of selectable cards */
+.servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+
+  /* Mostrar todos los servicios: no limitar altura ni scroll interno */
+  max-height: none;
+  overflow: visible;
+}
+
+@media (max-width: 800px) {
+  .servicios-grid { grid-template-columns: 1fr; }
+}
+
+/* slots */
+.slots-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-height: 28vh;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+.slot-button {
+  background: #fff5fa;
+  border: 2px solid #f5b6ca;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #c2185b;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.slot-button.active-slot {
+  background: #c5ffd0;
+  border-color: #aee6b8;
+  color: #0a6b2a;
+}
+
+/* mejora visual botones servicio activo */
+.btn-pastel.pastel-ver {
+  background: #e6fff0;
+  border: 1px solid #c5ffd0;
+}
+
+.form-page {
+  margin-top: 40px; /* ← evita que se pegue al navbar */
+}
+
+/* --- MODALES ANCHOS / 4 COLUMNAS --- */
+.modal-4cols {
+  max-width: 1400px; /* ancho mayor para modales */
+  width: 100%;
+  padding: 20px;
+}
+
+/* Forzar layout de formularios en 4 columnas dentro del modal ancho */
+.modal-4cols .form-row {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* Mostrar servicios en 4 columnas dentro del modal ancho */
+.modal-4cols .servicios-grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* Forzar 4 columnas en listados cuando usamos .modal-4cols */
+.modal-4cols .clientes-grid,
+.modal-4cols .servicios-grid,
+.modal-4cols .citas-grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* ajuste responsive: bajar a 2 columnas en pantallas medianas */
+@media (max-width: 1200px) {
+  .modal-4cols .clientes-grid,
+  .modal-4cols .servicios-grid,
+  .modal-4cols .citas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mostrar servicios en 4 columnas dentro del modal ancho */
+.modal-4cols .servicios-grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* Ajustes de slots y cards para modales grandes */
+.modal-4cols .slots-container {
+  gap: 10px;
+}
+
+/* Responsivo: volver a 1 columna en pantallas pequeñas */
+@media (max-width: 1000px) {
+  .modal-4cols .form-row { grid-template-columns: 1fr 1fr; }
+  .modal-4cols .servicios-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .modal-4cols .form-row { grid-template-columns: 1fr; }
+  .modal-4cols .servicios-grid { grid-template-columns: 1fr; }
+}

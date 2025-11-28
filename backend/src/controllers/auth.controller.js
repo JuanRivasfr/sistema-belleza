@@ -60,7 +60,7 @@ export async function register(req, res) {
       RETURNING id, nombre_completo, correo, rol
     `;
 
-    const values = [nombre_completo, correo, passwordHash, rol || "usuario"];
+    const values = [nombre_completo, correo, passwordHash, rol || "admin"];
 
     const result = await db.query(query, values);
     const newUser = result.rows[0];

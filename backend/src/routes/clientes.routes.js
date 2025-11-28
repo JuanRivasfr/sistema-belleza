@@ -8,5 +8,7 @@ router.post('/', authenticate, requireAdmin, clientesCtrl.createCliente);
 router.put('/:id', authenticate, requireAdmin, clientesCtrl.updateCliente);
 router.get('/:id', authenticate, clientesCtrl.getCliente);
 router.get('/', authenticate, clientesCtrl.searchClientes); // ?q=
+// nueva ruta DELETE
+router.delete('/:id', authenticate, requireAdmin, clientesCtrl.deleteCliente);
 
 export default router;

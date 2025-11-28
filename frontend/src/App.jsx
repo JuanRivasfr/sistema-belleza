@@ -13,6 +13,8 @@ import Servicios from "./pages/Servicios";
 import Pagos from "./pages/Pagos";
 import Reportes from "./pages/Reportes";
 import AdminLayout from "./layouts/AdminLayout";
+import CrearCliente from "./pages/CrearCliente";
+import CrearServicio from "./pages/CrearServicio";
 
 // Usuario
 import MisCitas from "./pages/MisCitas";
@@ -25,6 +27,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+
           {/* Páginas públicas */}
           <Route path="/" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
@@ -40,7 +43,9 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/citas" element={<Citas />} />
             <Route path="/clientes" element={<Clientes />} />
+            <Route path="/clientes/nuevo" element={<CrearCliente />} />
             <Route path="/servicios" element={<Servicios />} />
+            <Route path="/servicios/nuevo" element={<CrearServicio />} />
             <Route path="/pagos" element={<Pagos />} />
             <Route path="/reportes" element={<Reportes />} />
           </Route>
@@ -55,6 +60,7 @@ function App() {
           >
             <Route path="/mis-citas" element={<MisCitas />} />
           </Route>
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -60,12 +60,12 @@ export default function Login() {
           </Button>
         </form>
 
-        {/* ENLACE PARA CREAR USUARIO */}
+        {/* ENLACE PARA CREAR USUARIO
         <div style={{ textAlign: "center", marginTop: "15px" }}>
           <Link to="/registro" style={{ color: "#c2185b", textDecoration: "none" }}>
             Crear una nueva cuenta
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
