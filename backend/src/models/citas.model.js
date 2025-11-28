@@ -70,10 +70,15 @@ export async function listCitasByFecha(fecha) {
        c.*,
        cl.nombre AS nombre_cliente,
        cl.apellido AS apellido_cliente,
+       cl.telefono AS cliente_telefono,
        e.nombre AS nombre_especialista,
        e.apellido AS apellido_especialista,
-       COALESCE(json_agg(json_build_object('id', s.id, 'nombre', s.nombre, 'duracion_minutos', s.duracion_minutos) )
-                FILTER (WHERE s.id IS NOT NULL), '[]') AS servicios
+       COALESCE(json_agg(json_build_object(
+         'id', s.id,
+         'nombre', s.nombre,
+         'duracion_minutos', s.duracion_minutos,
+         'precio', s.precio
+       ) ) FILTER (WHERE s.id IS NOT NULL), '[]') AS servicios
      FROM citas c
      LEFT JOIN clientes cl ON cl.id = c.cliente_id
      LEFT JOIN empleados e ON e.id = c.especialista_id
@@ -81,7 +86,7 @@ export async function listCitasByFecha(fecha) {
      LEFT JOIN servicios s ON s.id = cs.servicio_id
      WHERE c.fecha = $1
        AND c.estado != 'cancelada'   -- <-- filtrar citas canceladas
-     GROUP BY c.id, cl.nombre, cl.apellido, e.nombre, e.apellido
+     GROUP BY c.id, cl.nombre, cl.apellido, cl.telefono, e.nombre, e.apellido
      ORDER BY c.hora_inicio`,
     [fecha]
   );

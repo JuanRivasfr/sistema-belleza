@@ -139,6 +139,24 @@ export async function cancelarCita(req, res) {
   res.json(updated);
 }
 
+// --- nuevo: actualizar estado ---
+export async function updateEstadoCita(req, res) {
+  try {
+    const id = req.params.id;
+    const { estado } = req.body;
+    const allowed = ['pendiente', 'en curso', 'finalizada', 'cancelada'];
+    if (!estado || !allowed.includes(estado)) {
+      return res.status(400).json({ message: 'Estado inválido' });
+    }
+    const updated = await citasModel.updateCitaEstado(id, estado);
+    if (!updated) return res.status(404).json({ message: 'Cita no encontrada' });
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error actualizando estado' });
+  }
+}
+
 export async function listarCitasPorFecha(req, res) {
   const fecha = req.query.fecha;
   if (!fecha) return res.status(400).json({ message: 'Fecha requerida (YYYY-MM-DD)' });

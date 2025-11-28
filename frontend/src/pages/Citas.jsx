@@ -4,7 +4,8 @@ import {
   getCitas as apiGetCitas,
   updateCita as apiUpdateCita,
   cancelCita as apiCancelCita,
-  getDisponibilidad as apiGetDisponibilidad, // <-- añadido
+  getDisponibilidad as apiGetDisponibilidad,
+  updateCitaEstado as apiUpdateCitaEstado,
 } from "../services/citasService";
 import { getClientes } from "../services/clientesService";
 import { getServicios } from "../services/serviciosService";
@@ -31,6 +32,7 @@ export default function Citas() {
   const [editSlots, setEditSlots] = useState([]);
   const [loadingEditSlots, setLoadingEditSlots] = useState(false);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [changingEstadoId, setChangingEstadoId] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -143,6 +145,19 @@ export default function Citas() {
     } catch (err) {
       console.error(err);
       alert("No se pudo cancelar la cita.");
+    }
+  };
+
+  const handleChangeEstado = async (id, nuevoEstado) => {
+    try {
+      setChangingEstadoId(id);
+      await apiUpdateCitaEstado(id, nuevoEstado);
+      await load(fecha);
+    } catch (err) {
+      console.error(err);
+      alert('No se pudo actualizar el estado.');
+    } finally {
+      setChangingEstadoId(null);
     }
   };
 

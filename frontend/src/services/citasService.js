@@ -31,6 +31,12 @@ export const cancelCita = async (id) => {
 };
 
 // ====================== nuevo ======================
+// actualizar estado
+export const updateCitaEstado = async (id, estado) => {
+  const res = await API.patch(`/citas/${id}/status`, { estado });
+  return res.data;
+};
+
 export const deleteCita = async (id) => {
   const res = await API.delete(`/citas/${id}`);
   return res.data;

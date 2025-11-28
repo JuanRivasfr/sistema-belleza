@@ -9,6 +9,8 @@ router.put('/:id', authenticate, requireAdmin, citasCtrl.modificarCita);
 // permitir que usuarios autenticados puedan cancelar/reprogramar;
 // si quieres mantenerlo solo para admins, deja requireAdmin y asegúrate de usar token admin en frontend
 router.post('/:id/cancel', authenticate, citasCtrl.cancelarCita);
+// cambiar estado (solo ADMIN)
+router.patch('/:id/status', authenticate, requireAdmin, citasCtrl.updateEstadoCita);
 router.get('/', authenticate, citasCtrl.listarCitasPorFecha);
 router.get('/especialista/:id/available', authenticate, citasCtrl.getDisponibilidadEspecialista);
 router.delete('/:id', authenticate, requireAdmin, citasCtrl.deleteCita);

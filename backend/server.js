@@ -22,6 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/servicios', serviciosRoutes);
 app.use('/api/citas', citasRoutes);
+app.use('/api/pagos', pagosRoutes); // <-- registrar ruta de pagos
 app.use('/api/empleados', empleadosRoutes);
 
 app.get('/', (req, res) => {
